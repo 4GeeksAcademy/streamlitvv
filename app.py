@@ -3,8 +3,8 @@ import pandas as pd
 import pickle
 
 # Cargar el modelo y el dataset
-model = pickle.load(open('C:\\Users\\Fukushima\\Documents\\GitHub\\streamlitvv\\model.pkl', 'rb'))
-data = pd.read_csv('C:\\Users\\Fukushima\\Documents\\GitHub\\streamlitvv\\peliculas.csv')
+model = pickle.load(open('model.pkl', 'rb'))
+data = pd.read_csv('peliculas.csv')
 
 def get_recommendations(movie):
     # Aquí va la lógica para obtener recomendaciones
