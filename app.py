@@ -4,7 +4,7 @@ import pickle
 
 # Cargar el modelo y el dataset
 model = pickle.load(open('model.pkl', 'rb'))
-data = pd.read_csv('peliculas.csv')
+data = pd.read_csv('C:\\Users\\Fukushima\\Documents\\GitHub\\streamlitvv\\peliculas.csv')
 
 def get_recommendations(movie):
     st.write(f"Buscando recomendaciones para: {movie}")
