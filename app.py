@@ -7,28 +7,26 @@ model = pickle.load(open('model.pkl', 'rb'))
 data = pd.read_csv('peliculas.csv')
 
 def get_recommendations(movie):
-    # Aquí va la lógica para obtener recomendaciones
-    pass
+    st.write(f"Buscando recomendaciones para: {movie}")
+    # Aquí se asume que `model` es tu modelo entrenado y `data` es tu DataFrame
+    try:
+        # Supongamos que estás utilizando un sistema de recomendación basado en similitud
+        movie_index = data[data['title'].str.contains(movie, case=False)].index[0]
+        st.write(f"Índice de la película: {movie_index}")
+        # Simulando la obtención de recomendaciones
+        distances, indices = model.kneighbors(data.iloc[movie_index, :].values.reshape(1, -1), n_neighbors=10)
+        st.write(f"Índices de recomendaciones: {indices}")
+        recommendations = data['title'].iloc[indices[0]].tolist()
+        return recommendations
+    except Exception as e:
+        st.write(f"Error al obtener recomendaciones: {e}")
+        return []
 
-def main():
-    st.title("Recomendador de Películas")
-    
-    # Campo de entrada para el título de la película
-    movie = st.text_input("Ingrese el título de una película:")
-    
-    # Botón para obtener recomendaciones
-    if st.button("Recomendar"):
-        recommendations = get_recommendations(movie)
-        if recommendations:
-            st.write("Películas recomendadas:")
-            for rec in recommendations:
-                st.write(f"- {rec}")
-        else:
-            st.write("No se encontraron recomendaciones.")
-    
-    # Botón para hacer otra búsqueda
-    if st.button("Hacer otra búsqueda"):
-        st.experimental_rerun()
-
-if __name__ == '__main__':
-    main()
+def render_results(movie):
+    recommendations = get_recommendations(movie)
+    if recommendations:
+        st.write("Películas recomendadas:")
+        for rec in recommendations:
+            st.write(f"- {rec}")
+    else:
+        st.write("No se encontraron recomendaciones.")
