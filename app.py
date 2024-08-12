@@ -2,20 +2,25 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# Cargar el modelo y el dataset
+# Carga del vectorizador TF-IDF y el modelo KNN
+tfidf_vectorizer = pickle.load(open('tfidf_vectorizer.pkl', 'rb'))
 model = pickle.load(open('model.pkl', 'rb'))
-data = pd.read_csv('C:\\Users\\Fukushima\\Documents\\GitHub\\streamlitvv\\peliculas.csv')
+
+# Carga de los datos de películas
+data = pd.read_csv('peliculas.csv')  # Asegúrate de que este archivo esté en el mismo directorio o usa la ruta correcta
 
 def get_recommendations(movie):
     st.write(f"Buscando recomendaciones para: {movie}")
-    # Aquí se asume que `model` es tu modelo entrenado y `data` es tu DataFrame
     try:
-        # Supongamos que estás utilizando un sistema de recomendación basado en similitud
-        movie_index = data[data['title'].str.contains(movie, case=False)].index[0]
-        st.write(f"Índice de la película: {movie_index}")
-        # Simulando la obtención de recomendaciones
-        distances, indices = model.kneighbors(data.iloc[movie_index, :].values.reshape(1, -1), n_neighbors=10)
+        # Vectorización del título de la película ingresada
+        movie_vector = tfidf_vectorizer.transform([movie])
+        st.write(f"Vector de la película: {movie_vector}")
+
+        # Obtener recomendaciones usando KNN
+        distances, indices = model.kneighbors(movie_vector, n_neighbors=10)
         st.write(f"Índices de recomendaciones: {indices}")
+        
+        # Obtener títulos de las películas recomendadas
         recommendations = data['title'].iloc[indices[0]].tolist()
         return recommendations
     except Exception as e:
@@ -30,3 +35,9 @@ def render_results(movie):
             st.write(f"- {rec}")
     else:
         st.write("No se encontraron recomendaciones.")
+
+# Interfaz de Streamlit
+st.title("Recomendador de Películas")
+movie_title = st.text_input("Ingrese el título de una película:")
+if movie_title:
+    render_results(movie_title)
